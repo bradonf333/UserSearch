@@ -7,50 +7,49 @@ namespace UserSearchTests
 {
     public class XmlUserServiceTests
     {
+        private Mock<IDbRepository> _dbRepoMock;
+
         [SetUp]
         public void Setup()
         {
+            _dbRepoMock = SetUpDbMock();
         }
 
-        [Test]
-        public void UserService_CanBeInstantiated()
+        private static Mock<IDbRepository> SetUpDbMock()
         {
-            var repoMock = new Mock<IDbRepository>();
-            var userService = new XmlUserService(repoMock.Object);
-            Assert.That(userService, Is.Not.Null);
-        }
-
-        [Test]
-        public void UserService_HasGetUsersMethod()
-        {
-            var repoMock = new Mock<IDbRepository>();
-            repoMock.Setup(r => r.GetUsers()).Returns(new[] { 
-                new User { Id = 1, ClientId= 1, FirstName = "Test1",  LastName = "TestLast1", Email = "test@123.com"},
-                new User { Id = 2, ClientId= 2, FirstName = "Test2",  LastName = "TestLast2", Email = "test2@123.com"},
-            });
-            
-            var userService = new XmlUserService(repoMock.Object);
-            var users = userService.GetUsers("some string");
-
-            Assert.That(users, Is.Not.Null);
-            Assert.That(users.Count, Is.EqualTo(2));
-        }
-
-        [Test]
-        public void UserService_ReturnsUsers_WhereFirstNameMatchesTheGivenFirstName()
-        {
-            var repoMock = new Mock<IDbRepository>();
+            var repoMock =  new Mock<IDbRepository>();
             repoMock.Setup(r => r.GetUsers()).Returns(new[] {
                 new User { Id = 1, ClientId= 1, FirstName = "Test1",  LastName = "TestLast1", Email = "test@123.com"},
                 new User { Id = 2, ClientId= 2, FirstName = "Test2",  LastName = "TestLast2", Email = "test2@123.com"},
             });
 
+            return repoMock;
+        }
+
+        [Test]
+        public void UserService_ReturnsUsers_WhereFirstNameMatchesASingleUser()
+        {
+            var repoMock = SetUpDbMock();
+
             var userService = new XmlUserService(repoMock.Object);
-            var users = userService.GetUsers("Test2");
+            var users = userService.GetUsers(firstName: "Test2");
 
             Assert.That(users, Is.Not.Null);
             Assert.That(users.Count, Is.EqualTo(1));
             Assert.That(users.FirstOrDefault().FirstName, Is.EqualTo("Test2"));
+        }
+
+        [Test]
+        public void UserService_ReturnsUsers_WhereLastNameMatchesASingleUser()
+        {
+            var repoMock = SetUpDbMock();
+
+            var userService = new XmlUserService(repoMock.Object);
+            var users = userService.GetUsers(lastName: "TestLast2");
+
+            Assert.That(users, Is.Not.Null);
+            Assert.That(users.Count, Is.EqualTo(1));
+            Assert.That(users.FirstOrDefault().LastName, Is.EqualTo("TestLast2"));
         }
     }
 }
