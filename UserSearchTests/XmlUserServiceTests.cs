@@ -7,12 +7,10 @@ namespace UserSearchTests
 {
     public class XmlUserServiceTests
     {
-        private Mock<IDbRepository> _dbRepoMock;
 
         [SetUp]
         public void Setup()
         {
-            _dbRepoMock = SetUpDbMock();
         }
 
         private static Mock<IDbRepository> SetUpDbMock()
@@ -36,7 +34,7 @@ namespace UserSearchTests
 
             Assert.That(users, Is.Not.Null);
             Assert.That(users.Count, Is.EqualTo(1));
-            Assert.That(users.FirstOrDefault().FirstName, Is.EqualTo("Test2"));
+            Assert.That(users.ToList()[0].FirstName, Is.EqualTo("Test2"));
         }
 
         [Test]
@@ -49,7 +47,7 @@ namespace UserSearchTests
 
             Assert.That(users, Is.Not.Null);
             Assert.That(users.Count, Is.EqualTo(1));
-            Assert.That(users.FirstOrDefault().LastName, Is.EqualTo("TestLast2"));
+            Assert.That(users.ToList()[0].LastName, Is.EqualTo("TestLast2"));
         }
     }
 }
