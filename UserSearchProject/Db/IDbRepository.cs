@@ -5,6 +5,6 @@ namespace UserSearchProject.Db
 {
     public interface IDbRepository
     {
-        IEnumerable<User> GetUsers();
+        IEnumerable<User> GetUsers(string firstName);
     }
 }

@@ -12,9 +12,9 @@ namespace UserSearchProject.Services
             _dbRepository = dbRepository;
         }
 
-        public IEnumerable<User> GetUsers()
+        public IEnumerable<User> GetUsers(string firstName)
         {
-            return _dbRepository.GetUsers();
+            return _dbRepository.GetUsers(firstName);
         }
     }
 }
