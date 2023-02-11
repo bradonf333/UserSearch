@@ -31,7 +31,7 @@ namespace UserSearchTests
         {
             var repoMock = SetUpDbMock();
 
-            var userService = new XmlUserService(repoMock.Object);
+            var userService = new UserService(repoMock.Object);
             var users = userService.GetUsers(firstName: "Test2");
 
             Assert.That(users, Is.Not.Null);
@@ -44,7 +44,7 @@ namespace UserSearchTests
         {
             var repoMock = SetUpDbMock();
 
-            var userService = new XmlUserService(repoMock.Object);
+            var userService = new UserService(repoMock.Object);
             var users = userService.GetUsers(lastName: "TestLast2");
 
             Assert.That(users, Is.Not.Null);

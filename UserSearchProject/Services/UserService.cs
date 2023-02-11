@@ -3,11 +3,11 @@ using UserSearchProject.Db;
 
 namespace UserSearchProject.Services
 {
-    public class XmlUserService : IUserService
+    public class UserService : IUserService
     {
         private IDbRepository _dbRepository;
 
-        public XmlUserService(IDbRepository dbRepository)
+        public UserService(IDbRepository dbRepository)
         {
             _dbRepository = dbRepository;
         }
