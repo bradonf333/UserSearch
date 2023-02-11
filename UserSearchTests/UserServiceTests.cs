@@ -5,7 +5,7 @@ using UserSearchProject.Services;
 
 namespace UserSearchTests
 {
-    public class XmlUserServiceTests
+    public class UserServiceTests
     {
 
         [SetUp]
@@ -25,7 +25,7 @@ namespace UserSearchTests
         }
 
         [Test]
-        public void UserService_ReturnsUsers_WhereFirstNameMatchesASingleUser()
+        public void UserService_ReturnsUsers_WhereFirstNameMatchesSingleUsersFirstName()
         {
             var repoMock = SetUpDbMock();
 
@@ -38,7 +38,7 @@ namespace UserSearchTests
         }
 
         [Test]
-        public void UserService_ReturnsUsers_WhereLastNameMatchesASingleUser()
+        public void UserService_ReturnsUsers_WhereLastNameMatchesSingleUsersLastName()
         {
             var repoMock = SetUpDbMock();
 
@@ -48,6 +48,20 @@ namespace UserSearchTests
             Assert.That(users, Is.Not.Null);
             Assert.That(users.Count, Is.EqualTo(1));
             Assert.That(users.ToList()[0].LastName, Is.EqualTo("TestLast2"));
+        }
+
+
+        [Test]
+        public void UserService_ReturnsUsers_WhereEmailMatchesSingleUsersEmail()
+        {
+            var repoMock = SetUpDbMock();
+
+            var userService = new UserService(repoMock.Object);
+            var users = userService.GetUsers(email: "test2@123.com");
+
+            Assert.That(users, Is.Not.Null);
+            Assert.That(users.Count, Is.EqualTo(1));
+            Assert.That(users.ToList()[0].Email, Is.EqualTo("test2@123.com"));
         }
     }
 }

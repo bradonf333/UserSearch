@@ -12,7 +12,7 @@ namespace UserSearchProject.Services
             _dbRepository = dbRepository;
         }
 
-        public IEnumerable<User> GetUsers(string firstName = null, string lastName = null)
+        public IEnumerable<User> GetUsers(string firstName = null, string lastName = null, string email = null)
         {
             return _dbRepository.GetUsers()
                 .Where(u => u.FirstName == firstName
