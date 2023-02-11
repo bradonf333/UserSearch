@@ -14,9 +14,22 @@ namespace UserSearchProject.Services
 
         public IEnumerable<User> GetUsers(string firstName = null, string lastName = null, string email = null)
         {
-            return _dbRepository.GetUsers()
-                .Where(u => u.FirstName == firstName
-                || u.LastName == lastName);
+            IEnumerable<User> users;
+            if(!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName))
+            {
+                users = _dbRepository.GetUsers()
+                .Where(u => u.FirstName == firstName)
+                .Where(u => u.LastName == lastName);
+            }
+            else
+            {
+                users = _dbRepository.GetUsers()
+               .Where(u => u.FirstName == firstName
+               || u.LastName == lastName
+               || u.Email == email);
+            }
+
+            return users;
         }
     }
 }

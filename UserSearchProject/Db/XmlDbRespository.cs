@@ -6,7 +6,7 @@ namespace UserSearchProject.Db
     {
         public IEnumerable<User> GetUsers()
         {
-            return new[] { new User() };
+            return Enumerable.Empty<User>();
         }
     }
 }
