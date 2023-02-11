@@ -4,6 +4,6 @@ namespace UserSearchProject.Services
 {
     public interface IUserService
     {
-        IEnumerable<User> GetUsers();
+        IEnumerable<User> GetUsers(string firstName, string lastName);
     }
 }
