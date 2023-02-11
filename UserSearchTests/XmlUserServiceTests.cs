@@ -24,7 +24,7 @@ namespace UserSearchTests
         public void UserService_HasGetUsersMethod()
         {
             var repoMock = new Mock<IDbRepository>();
-            repoMock.Setup(r => r.GetUsers(It.IsAny<string>())).Returns(new[] { 
+            repoMock.Setup(r => r.GetUsers()).Returns(new[] { 
                 new User { Id = 1, ClientId= 1, FirstName = "Test1",  LastName = "TestLast1", Email = "test@123.com"},
                 new User { Id = 2, ClientId= 2, FirstName = "Test2",  LastName = "TestLast2", Email = "test2@123.com"},
             });
@@ -40,7 +40,7 @@ namespace UserSearchTests
         public void UserService_ReturnsUsers_WhereFirstNameMatchesTheGivenFirstName()
         {
             var repoMock = new Mock<IDbRepository>();
-            repoMock.Setup(r => r.GetUsers((It.IsAny<string>()))).Returns(new[] {
+            repoMock.Setup(r => r.GetUsers()).Returns(new[] {
                 new User { Id = 1, ClientId= 1, FirstName = "Test1",  LastName = "TestLast1", Email = "test@123.com"},
                 new User { Id = 2, ClientId= 2, FirstName = "Test2",  LastName = "TestLast2", Email = "test2@123.com"},
             });

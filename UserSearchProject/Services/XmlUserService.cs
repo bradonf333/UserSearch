@@ -14,7 +14,7 @@ namespace UserSearchProject.Services
 
         public IEnumerable<User> GetUsers(string firstName)
         {
-            return _dbRepository.GetUsers(firstName);
+            return _dbRepository.GetUsers();
         }
     }
 }
