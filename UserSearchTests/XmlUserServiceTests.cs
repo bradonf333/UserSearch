@@ -46,11 +46,11 @@ namespace UserSearchTests
             });
 
             var userService = new XmlUserService(repoMock.Object);
-            var users = userService.GetUsers("Test1");
+            var users = userService.GetUsers("Test2");
 
             Assert.That(users, Is.Not.Null);
             Assert.That(users.Count, Is.EqualTo(1));
-            Assert.That(users.FirstOrDefault().FirstName, Is.EqualTo("Test1"));
+            Assert.That(users.FirstOrDefault().FirstName, Is.EqualTo("Test2"));
         }
     }
 }
