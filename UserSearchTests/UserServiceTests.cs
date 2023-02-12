@@ -1,4 +1,5 @@
 using Moq;
+using System.Globalization;
 using UserSearchProject.Data;
 using UserSearchProject.Db;
 using UserSearchProject.Services;
@@ -46,7 +47,6 @@ namespace UserSearchTests
             Assert.That(users.ToList()[0].Email, Is.EqualTo(expectedEmail));
         }
 
-
         [Test]
         public void UserService_ReturnsUsers_WhereBothFirstAndLastNameMatchSingleUsersFirstAndLastName()
         {
@@ -56,7 +56,7 @@ namespace UserSearchTests
             repoMock.Setup(r => r.GetUsers()).Returns(new List<User> {
                 new User { Id = 1, ClientId= 1, FirstName = expectedFirstName,  LastName = "Harrison", Email = "testemail@123.com"},
                 new User { Id = 2, ClientId= 2, FirstName = expectedFirstName,  LastName = expectedLastName, Email = "test2@123.com"},
-            }.AsQueryable);
+            });
 
             var userService = new UserService(repoMock.Object);
             var users = userService.GetUsers(firstName: expectedFirstName, lastName:expectedLastName);
@@ -65,6 +65,72 @@ namespace UserSearchTests
             Assert.That(users.Count, Is.EqualTo(1));
             Assert.That(users.ToList()[0].FirstName, Is.EqualTo(expectedFirstName));
             Assert.That(users.ToList()[0].LastName, Is.EqualTo(expectedLastName));
+        }
+
+        [Test]
+        public void UserService_ReturnsUsers_WhenFirstNameMatchesRegardlessOfCase()
+        {
+            var expectedFirstName = "Joseph";
+            var expectedLastName = "Stanford";
+            var expectedEmail = "jstan@123.com";
+            var repoMock = new Mock<IDbRepository>();
+
+            repoMock.Setup(r => r.GetUsers()).Returns(new List<User> {
+                new User { Id = 2, ClientId= 2, FirstName = expectedFirstName,  LastName = expectedLastName, Email = expectedEmail},
+            });
+
+            var userService = new UserService(repoMock.Object);
+            var users = userService.GetUsers(firstName: "jOsEPH");
+
+            Assert.That(users, Is.Not.Null);
+            Assert.That(users.Count, Is.EqualTo(1));
+            Assert.That(users.ToList()[0].FirstName, Is.EqualTo(expectedFirstName));
+            Assert.That(users.ToList()[0].LastName, Is.EqualTo(expectedLastName));
+            Assert.That(users.ToList()[0].Email, Is.EqualTo(expectedEmail));
+        }
+
+        [Test]
+        public void UserService_ReturnsUsers_WhenLastNameMatchesRegardlessOfCase()
+        {
+            var expectedFirstName = "Jo";
+            var expectedLastName = "Stanford";
+            var expectedEmail = "jstan@123.com";
+            var repoMock = new Mock<IDbRepository>();
+
+            repoMock.Setup(r => r.GetUsers()).Returns(new List<User> {
+                new User { Id = 2, ClientId= 2, FirstName = expectedFirstName,  LastName = expectedLastName, Email = expectedEmail},
+            });
+
+            var userService = new UserService(repoMock.Object);
+            var users = userService.GetUsers(lastName: "stANfoRD");
+
+            Assert.That(users, Is.Not.Null);
+            Assert.That(users.Count, Is.EqualTo(1));
+            Assert.That(users.ToList()[0].FirstName, Is.EqualTo(expectedFirstName));
+            Assert.That(users.ToList()[0].LastName, Is.EqualTo(expectedLastName));
+            Assert.That(users.ToList()[0].Email, Is.EqualTo(expectedEmail));
+        }
+
+        [Test]
+        public void UserService_ReturnsUsers_WhenEmailMatchesRegardlessOfCase()
+        {
+            var expectedFirstName = "Jo";
+            var expectedLastName = "Stanford";
+            var expectedEmail = "jstan@123.com";
+            var repoMock = new Mock<IDbRepository>();
+
+            repoMock.Setup(r => r.GetUsers()).Returns(new List<User> {
+                new User { Id = 2, ClientId= 2, FirstName = expectedFirstName,  LastName = expectedLastName, Email = expectedEmail},
+            });
+
+            var userService = new UserService(repoMock.Object);
+            var users = userService.GetUsers(email: "jsTAN@123.coM");
+
+            Assert.That(users, Is.Not.Null);
+            Assert.That(users.Count, Is.EqualTo(1));
+            Assert.That(users.ToList()[0].FirstName, Is.EqualTo(expectedFirstName));
+            Assert.That(users.ToList()[0].LastName, Is.EqualTo(expectedLastName));
+            Assert.That(users.ToList()[0].Email, Is.EqualTo(expectedEmail));
         }
 
         private static Mock<IDbRepository> SetUpDbMock()
