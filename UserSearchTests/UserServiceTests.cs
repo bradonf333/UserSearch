@@ -1,5 +1,4 @@
 using Moq;
-using System.Globalization;
 using UserSearchProject.Data;
 using UserSearchProject.Db;
 using UserSearchProject.Services;
@@ -8,142 +7,155 @@ namespace UserSearchTests
 {
     public class UserServiceTests
     {
-        [Test]
-        public void UserService_ReturnsUsers_WhereFirstNameMatchesSingleUsersFirstName()
+        public List<User> _users;
+
+        [SetUp]
+        public void SetUp()
         {
-            var expectedName = "Cyrus";
+            _users = new List<User>
+            {
+                new User { Id = 1, ClientId= 123, FirstName = "Sarah",  LastName = "Adkins", Email = "saraad@123.com"},
+                new User { Id = 2, ClientId= 223, FirstName = "Cyrus",  LastName = "Bates", Email = "cyBates@123.com"},
+                new User { Id = 3, ClientId= 323, FirstName = "Cypress",  LastName = "Johnson", Email = "cyJohns@123.com"},
+                new User { Id = 4, ClientId= 423, FirstName = "John",  LastName = "Carney", Email = "johnc@123.com"},
+                new User { Id = 5, ClientId= 523, FirstName = "Harriet",  LastName = "Barton", Email = "hbar@123.com"},
+            };
+        }
+        [Test]
+        public void ReturnsMatchingUser_WhereFirstNameMatches_SingleUser()
+        {
+            var expectedUser = _users[1];
             var repoMock = SetUpDbMock();
             var userService = new UserService(repoMock.Object);
-            var users = userService.GetUsers(firstName: expectedName);
+            var users = userService.GetUsers(firstName: expectedUser.FirstName);
 
             Assert.That(users, Is.Not.Null);
             Assert.That(users.Count, Is.EqualTo(1));
-            Assert.That(users.ToList()[0].FirstName, Is.EqualTo(expectedName));
+            Assert.That(users.ToList()[0], Is.EqualTo(expectedUser));
         }
 
         [Test]
-        public void UserService_ReturnsUsers_WhereLastNameMatchesSingleUsersLastName()
+        public void ReturnsMatchingUsers_WhereLastNameMatches_SingleUsersLastName()
         {
-            var expectedLastName = "Carney";
+            var expectedUser = _users[3];
             var repoMock = SetUpDbMock();
             var userService = new UserService(repoMock.Object);
-            var users = userService.GetUsers(lastName: expectedLastName);
+            var users = userService.GetUsers(lastName: expectedUser.LastName);
 
             Assert.That(users, Is.Not.Null);
             Assert.That(users.Count, Is.EqualTo(1));
-            Assert.That(users.ToList()[0].LastName, Is.EqualTo(expectedLastName));
+            Assert.That(users.ToList()[0], Is.EqualTo(expectedUser));
         }
 
         [Test]
-        public void UserService_ReturnsUsers_WhereEmailMatchesSingleUsersEmail()
+        public void ReturnsMatchingUsers_WhereEmailMatches_SingleUsersEmail()
         {
-            var expectedEmail = "hbar@123.com";
+            var expectedUser = _users[4];
             var repoMock = SetUpDbMock();
             var userService = new UserService(repoMock.Object);
-            var users = userService.GetUsers(email: expectedEmail);
+            var users = userService.GetUsers(email: expectedUser.Email);
 
             Assert.That(users, Is.Not.Null);
             Assert.That(users.Count, Is.EqualTo(1));
-            Assert.That(users.ToList()[0].Email, Is.EqualTo(expectedEmail));
+            Assert.That(users.ToList()[0], Is.EqualTo(expectedUser));
         }
 
         [Test]
-        public void UserService_ReturnsUsers_WhereBothFirstAndLastNameMatchSingleUsersFirstAndLastName()
+        public void ReturnsMatchingUsers_WhereBothFirstAndLastNameMatch_SingleUsersFirstAndLastName()
         {
-            var expectedFirstName = "Jo";
-            var expectedLastName = "Stanford";
+            var newUsers = new List<User>
+            {
+                CreateSingleUser(),
+                CreateSingleUser()
+            };
+            newUsers[1].LastName = "Harrison";
             var repoMock = new Mock<IDbRepository>();
-            repoMock.Setup(r => r.GetUsers()).Returns(new List<User> {
-                new User { Id = 1, ClientId= 1, FirstName = expectedFirstName,  LastName = "Harrison", Email = "testemail@123.com"},
-                new User { Id = 2, ClientId= 2, FirstName = expectedFirstName,  LastName = expectedLastName, Email = "test2@123.com"},
-            });
+            repoMock.Setup(r => r.GetUsers()).Returns(newUsers);
 
             var userService = new UserService(repoMock.Object);
-            var users = userService.GetUsers(firstName: expectedFirstName, lastName:expectedLastName);
+            var users = userService.GetUsers(firstName: newUsers[0].FirstName, lastName: newUsers[0].LastName);
 
             Assert.That(users, Is.Not.Null);
             Assert.That(users.Count, Is.EqualTo(1));
-            Assert.That(users.ToList()[0].FirstName, Is.EqualTo(expectedFirstName));
-            Assert.That(users.ToList()[0].LastName, Is.EqualTo(expectedLastName));
+            Assert.That(users.ToList()[0], Is.EqualTo(newUsers[0]));
         }
 
         [Test]
-        public void UserService_ReturnsUsers_WhenFirstNameMatchesRegardlessOfCase()
+        public void ReturnsUsers_WhenFirstNameMatches_RegardlessOfCase()
         {
-            var expectedFirstName = "Joseph";
-            var expectedLastName = "Stanford";
-            var expectedEmail = "jstan@123.com";
             var repoMock = new Mock<IDbRepository>();
 
-            repoMock.Setup(r => r.GetUsers()).Returns(new List<User> {
-                new User { Id = 2, ClientId= 2, FirstName = expectedFirstName,  LastName = expectedLastName, Email = expectedEmail},
-            });
+            var newUsers = new List<User>
+            {
+                CreateSingleUser()
+            };
+
+            repoMock.Setup(r => r.GetUsers()).Returns(newUsers);
 
             var userService = new UserService(repoMock.Object);
             var users = userService.GetUsers(firstName: "jOsEPH");
 
             Assert.That(users, Is.Not.Null);
             Assert.That(users.Count, Is.EqualTo(1));
-            Assert.That(users.ToList()[0].FirstName, Is.EqualTo(expectedFirstName));
-            Assert.That(users.ToList()[0].LastName, Is.EqualTo(expectedLastName));
-            Assert.That(users.ToList()[0].Email, Is.EqualTo(expectedEmail));
+            Assert.That(users.ToList()[0], Is.EqualTo(newUsers[0]));
         }
 
         [Test]
-        public void UserService_ReturnsUsers_WhenLastNameMatchesRegardlessOfCase()
+        public void ReturnsUsers_WhenLastNameMatches_RegardlessOfCase()
         {
-            var expectedFirstName = "Jo";
-            var expectedLastName = "Stanford";
-            var expectedEmail = "jstan@123.com";
             var repoMock = new Mock<IDbRepository>();
 
-            repoMock.Setup(r => r.GetUsers()).Returns(new List<User> {
-                new User { Id = 2, ClientId= 2, FirstName = expectedFirstName,  LastName = expectedLastName, Email = expectedEmail},
-            });
+            var newUsers = new List<User>
+            {
+                CreateSingleUser()
+            };
+
+            repoMock.Setup(r => r.GetUsers()).Returns(newUsers);
 
             var userService = new UserService(repoMock.Object);
             var users = userService.GetUsers(lastName: "stANfoRD");
 
             Assert.That(users, Is.Not.Null);
             Assert.That(users.Count, Is.EqualTo(1));
-            Assert.That(users.ToList()[0].FirstName, Is.EqualTo(expectedFirstName));
-            Assert.That(users.ToList()[0].LastName, Is.EqualTo(expectedLastName));
-            Assert.That(users.ToList()[0].Email, Is.EqualTo(expectedEmail));
+            Assert.That(users.ToList()[0], Is.EqualTo(newUsers[0]));
         }
 
         [Test]
-        public void UserService_ReturnsUsers_WhenEmailMatchesRegardlessOfCase()
+        public void ReturnsUsers_WhenEmailMatches_RegardlessOfCase()
         {
-            var expectedFirstName = "Jo";
-            var expectedLastName = "Stanford";
-            var expectedEmail = "jstan@123.com";
             var repoMock = new Mock<IDbRepository>();
 
-            repoMock.Setup(r => r.GetUsers()).Returns(new List<User> {
-                new User { Id = 2, ClientId= 2, FirstName = expectedFirstName,  LastName = expectedLastName, Email = expectedEmail},
-            });
+            var newUsers = new List<User>
+            {
+                CreateSingleUser()
+            };
+
+            repoMock.Setup(r => r.GetUsers()).Returns(newUsers);
 
             var userService = new UserService(repoMock.Object);
             var users = userService.GetUsers(email: "jsTAN@123.coM");
 
             Assert.That(users, Is.Not.Null);
             Assert.That(users.Count, Is.EqualTo(1));
-            Assert.That(users.ToList()[0].FirstName, Is.EqualTo(expectedFirstName));
-            Assert.That(users.ToList()[0].LastName, Is.EqualTo(expectedLastName));
-            Assert.That(users.ToList()[0].Email, Is.EqualTo(expectedEmail));
+            Assert.That(users.ToList()[0], Is.EqualTo(newUsers[0]));
         }
 
-        private static Mock<IDbRepository> SetUpDbMock()
+        private Mock<IDbRepository> SetUpDbMock()
         {
             var repoMock = new Mock<IDbRepository>();
-            repoMock.Setup(r => r.GetUsers()).Returns(new List<User> {
-                new User { Id = 1, ClientId= 123, FirstName = "Sarah",  LastName = "Adkins", Email = "saraad@123.com"},
-                new User { Id = 2, ClientId= 223, FirstName = "Cyrus",  LastName = "Bates", Email = "cyBates@123.com"},
-                new User { Id = 3, ClientId= 323, FirstName = "John",  LastName = "Carney", Email = "johnc@123.com"},
-                new User { Id = 4, ClientId= 423, FirstName = "Harriet",  LastName = "Barton", Email = "hbar@123.com"},
-            });
+            repoMock.Setup(r => r.GetUsers()).Returns(_users);
 
             return repoMock;
+        }
+
+        private User CreateSingleUser()
+        {
+            return new User
+            {
+                FirstName = "Joseph",
+                LastName = "Stanford",
+                Email = "jstan@123.com"
+            };
         }
     }
 }

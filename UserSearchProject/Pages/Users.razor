@@ -44,11 +44,11 @@
                     </div>
                 </div>
                 <div class="row justify-content-center">
-                    <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
+                    <div class="col-md-3 d-flex align-items-end" style="margin-top: 16px;">
                         <RadzenButton ButtonType="ButtonType.Submit" Text="Search" Click=@SearchUsers />
                     </div>
-                    <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
-                        <RadzenButton ButtonType="ButtonType.Button" Text="Clear" Click=@ClearUsers />
+                    <div class="col-md-3 d-flex align-items-end" style="margin-top: 16px;">
+                        <RadzenButton ButtonType="ButtonType.Button" Text="Clear Results" Click=@ClearUsers />
                     </div>
                 </div>
             </RadzenFieldset>
@@ -60,8 +60,8 @@
 {
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-8">
-                <RadzenDataGrid Data="@users" Count="@users.Count()" TItem="User">
+            <div class="col-md-10">
+                <RadzenDataGrid Data="@users" Count="@users.Count()" TItem="User" AllowColumnResize="true">
                     <Columns>
                         <RadzenDataGridColumn TItem="User" Property="Id" Title="User Id" />
                         <RadzenDataGridColumn TItem="User" Property="ClientId" Title="ClientId" />
@@ -95,7 +95,7 @@
 
     private void DisableInput(int option)
     {
-        // Ensure we reset the field every time the user changes radio button.
+        // Ensure we reset the field every time the user changes the radio button.
         // If not, when they switch to new option, the values don't get reset.
         FirstName = null;
         LastName = null;
