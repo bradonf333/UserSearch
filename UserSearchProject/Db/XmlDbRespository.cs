@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using UserSearchProject.Data;
 
 namespace UserSearchProject.Db

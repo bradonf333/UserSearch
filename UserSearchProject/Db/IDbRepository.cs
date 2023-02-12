@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UserSearchProject.Data;
+﻿using UserSearchProject.Data;
 
 namespace UserSearchProject.Db
 {
