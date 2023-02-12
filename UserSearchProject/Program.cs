@@ -1,13 +1,16 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using UserSearchProject.Data;
+using UserSearchProject.Db;
+using UserSearchProject.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-//builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<IDbRepository, XmlDbRespository>();
 
 var app = builder.Build();
 

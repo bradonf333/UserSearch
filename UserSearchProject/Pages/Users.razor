@@ -1,8 +1,143 @@
-﻿<PageTitle>Users</PageTitle>
-<RadzenButton Text="Hello world!" />
+﻿@using UserSearchProject.Data;
+@using UserSearchProject.Services;
+@inject IUserService userService
+
+<PageTitle>Users</PageTitle>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <RadzenFieldset Text="User Search">
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Select your Search Option</RadzenText>
+                <RadzenRadioButtonList @bind-Value=@value TValue="int" Change=@((searchCriteria) => DisableInput(searchCriteria))>
+                    <Items>
+                        <div class="col-md-4 align-items-center">
+                            <RadzenRadioButtonListItem Text="First Name" Value="1" />
+                        </div>
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenRadioButtonListItem Text="Last Name" Value="2" />
+                        </div>
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenRadioButtonListItem Text="Email" Value="3" />
+                        </div>
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenRadioButtonListItem Text="First and Last Name" Value="4" />
+                        </div>
+                    </Items>
+                </RadzenRadioButtonList>
+                <br />
+                <div class="col-md-6" hidden="@IsRadioFirstNameDisabled">
+                    <div>
+                        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">First Name</RadzenText>
+                        <RadzenTextBox @bind-Value=@FirstName TValue="string" class="w-100" />
+                    </div>
+                </div>
+                <div class="col-md-6" hidden="@IsRadioLastNameDisabled">
+                    <div>
+                        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Last Name</RadzenText>
+                        <RadzenTextBox @bind-Value=@LastName TValue="string" class="w-100" />
+                    </div>
+                </div>
+                <div class="col-md-6" hidden="@IsRadioEmailDisabled">
+                    <div>
+                        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Email</RadzenText>
+                        <RadzenTextBox @bind-Value=@Email TValue="string" class="w-100" />
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="Search" Click=@SearchUsers />
+                    </div>
+                    <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
+                        <RadzenButton ButtonType="ButtonType.Button" Text="Clear" Click=@ClearUsers />
+                    </div>
+                </div>
+            </RadzenFieldset>
+        </div>
+    </div>
+</div>
+
+@if (users != null)
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <RadzenDataGrid Data="@users" Count="@users.Count()" TItem="User">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="User" Property="Id" Title="User Id" />
+                        <RadzenDataGridColumn TItem="User" Property="ClientId" Title="ClientId" />
+                        <RadzenDataGridColumn TItem="User" Property="FirstName" Title="First Name" />
+                        <RadzenDataGridColumn TItem="User" Property="LastName" Title="Last Name" />
+                        <RadzenDataGridColumn TItem="User" Property="Email" Title="Email" />
+                        <RadzenDataGridColumn TItem="User" Property="IsBusinessContact" Title="Business Contact" />
+                        <RadzenDataGridColumn TItem="User" Property="IsAccountingContact" Title="Accounting Contact" />
+                        <RadzenDataGridColumn TItem="User" Property="IsTechnicalContact" Title="Technical Contact" />
+                        <RadzenDataGridColumn TItem="User" Property="HasApiAccess" Title="HasApiAccess" />
+                    </Columns>
+                </RadzenDataGrid>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
+    HorizontalAlign enumValue;
     [Parameter]
     public string? Title { get; set; }
+    private bool IsRadioFirstNameDisabled = false;
+    private bool IsRadioLastNameDisabled = true;
+    private bool IsRadioEmailDisabled = true;
+    private string? FirstName;
+    private string? LastName;
+    private string? Email;
+    IEnumerable<User>? users;
 
+    int value = 1;
+
+    private void DisableInput(int option)
+    {
+        // Ensure we reset the field every time the user changes radio button.
+        // If not, when they switch to new option, the values don't get reset.
+        FirstName = null;
+        LastName = null;
+        Email = null;
+
+        switch (option)
+        {
+            // First Name Option Selected
+            case 1:
+                IsRadioFirstNameDisabled = false;
+                IsRadioLastNameDisabled = true;
+                IsRadioEmailDisabled = true;
+                break;
+            // Last Name Option Selected
+            case 2:
+                IsRadioFirstNameDisabled = true;
+                IsRadioLastNameDisabled = false;
+                FirstName = null;
+                IsRadioEmailDisabled = true;
+                break;
+            // Email Option Selected
+            case 3:
+                IsRadioFirstNameDisabled = true;
+                IsRadioLastNameDisabled = true;
+                IsRadioEmailDisabled = false;
+                break;
+            // First and Last Name Option Selected
+            case 4:
+                IsRadioFirstNameDisabled = false;
+                IsRadioLastNameDisabled = false;
+                IsRadioEmailDisabled = true;
+                break;
+        }
+    }
+
+    public void SearchUsers()
+    {
+        users = userService.GetUsers(FirstName, LastName, Email);
+    }
+
+    public void ClearUsers()
+    {
+        users = null;
+    }
 }
