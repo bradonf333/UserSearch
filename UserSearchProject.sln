@@ -5,7 +5,7 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserSearchProject", "UserSearchProject\UserSearchProject.csproj", "{BDB69180-8457-4EDA-A134-C4B352469197}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserSearchTests", "UserSearchTests\UserSearchTests.csproj", "{0A9DA314-793D-45FB-AAF4-F240A3D51AF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserSearchTests", "UserSearchTests\UserSearchTests.csproj", "{0A9DA314-793D-45FB-AAF4-F240A3D51AF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
